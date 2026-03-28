@@ -1,5 +1,4 @@
 <?php
-
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Foundation\Application;
@@ -23,22 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     Route::resource('tickets', TicketController::class)
         ->only(['index', 'create', 'store', 'show']);
 });
-
-// Rota temporária para debug do MIME
-Route::post('/debug-mime', function (\Illuminate\Http\Request $request) {
-    if ($request->hasFile('attachment')) {
-        $file = $request->file('attachment');
-        return response()->json([
-            'mime' => $file->getMimeType(),
-            'client_mime' => $file->getClientMimeType(),
-            'extension' => $file->getClientOriginalExtension(),
-        ]);
-    }
-    return response()->json(['error' => 'no file']);
-})->middleware('web');
 
 require __DIR__.'/auth.php';

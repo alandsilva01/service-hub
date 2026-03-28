@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use App\Models\Project;
+use App\Jobs\ProcessTicketAttachment;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,19 +14,13 @@ class TicketController extends Controller
         $tickets = Ticket::with(['project.company', 'user'])
             ->orderBy('created_at', 'desc')
             ->get();
-
-        return Inertia::render('Tickets/Index', [
-            'tickets' => $tickets,
-        ]);
+        return Inertia::render('Tickets/Index', ['tickets' => $tickets]);
     }
 
     public function create()
     {
         $projects = Project::with('company')->get();
-
-        return Inertia::render('Tickets/Create', [
-            'projects' => $projects,
-        ]);
+        return Inertia::render('Tickets/Create', ['projects' => $projects]);
     }
 
     public function store(Request $request)
@@ -37,7 +31,6 @@ class TicketController extends Controller
             'description' => 'nullable|string',
             'attachment'  => 'nullable|file|max:2048',
         ]);
-
         $path = null;
         if ($request->hasFile('attachment')) {
             $ext = $request->file('attachment')->getClientOriginalExtension();
@@ -46,8 +39,7 @@ class TicketController extends Controller
             }
             $path = $request->file('attachment')->store('attachments', 'local');
         }
-
-        Ticket::create([
+        $ticket = Ticket::create([
             'project_id'      => $validated['project_id'],
             'user_id'         => auth()->id(),
             'title'           => $validated['title'],
@@ -55,17 +47,16 @@ class TicketController extends Controller
             'status'          => 'open',
             'attachment_path' => $path,
         ]);
-
+        if ($path) {
+            ProcessTicketAttachment::dispatch($ticket);
+        }
         return redirect()->route('tickets.index')
             ->with('success', 'Ticket criado com sucesso!');
     }
 
     public function show(Ticket $ticket)
     {
-        $ticket->load(['project.company', 'user', 'ticketDetail']);
-
-        return Inertia::render('Tickets/Show', [
-            'ticket' => $ticket,
-        ]);
+        $ticket->load(['project.company', 'user', 'detail']);
+        return Inertia::render('Tickets/Show', ['ticket' => $ticket]);
     }
 }
