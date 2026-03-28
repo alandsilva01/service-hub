@@ -40,7 +40,6 @@ const submit = () => {
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="email" value="Email" />
-
                 <TextInput
                     id="email"
                     type="email"
@@ -50,13 +49,11 @@ const submit = () => {
                     autofocus
                     autocomplete="username"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
-
                 <TextInput
                     id="password"
                     type="password"
@@ -65,16 +62,13 @@ const submit = () => {
                     required
                     autocomplete="current-password"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-4 block">
                 <label class="flex items-center">
                     <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
+                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
                 </label>
             </div>
 
@@ -86,7 +80,6 @@ const submit = () => {
                 >
                     Forgot your password?
                 </Link>
-
                 <PrimaryButton
                     class="ms-4"
                     :class="{ 'opacity-25': form.processing }"
@@ -96,5 +89,12 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+
+        <!-- Hint de acesso para apresentação -->
+        <div class="access-hint mt-6">
+            <p class="font-semibold mb-1">🐾 Acesso de demonstração</p>
+            <p><span class="font-medium">Email:</span> alan@servicehub.com</p>
+            <p><span class="font-medium">Senha:</span> password</p>
+        </div>
     </GuestLayout>
 </template>
