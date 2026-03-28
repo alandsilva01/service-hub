@@ -35,12 +35,26 @@ class TicketController extends Controller
             'project_id'  => 'required|exists:projects,id',
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
+            'attachment'  => 'nullable|file|max:2048',
         ]);
 
-        $validated['user_id'] = auth()->id();
-        $validated['status']  = 'open';
+        $path = null;
+        if ($request->hasFile('attachment')) {
+            $ext = $request->file('attachment')->getClientOriginalExtension();
+            if (!in_array(strtolower($ext), ['json', 'txt'])) {
+                return back()->withErrors(['attachment' => 'O arquivo deve ser .json ou .txt']);
+            }
+            $path = $request->file('attachment')->store('attachments', 'local');
+        }
 
-        Ticket::create($validated);
+        Ticket::create([
+            'project_id'      => $validated['project_id'],
+            'user_id'         => auth()->id(),
+            'title'           => $validated['title'],
+            'description'     => $validated['description'] ?? null,
+            'status'          => 'open',
+            'attachment_path' => $path,
+        ]);
 
         return redirect()->route('tickets.index')
             ->with('success', 'Ticket criado com sucesso!');

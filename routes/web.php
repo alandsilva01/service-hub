@@ -28,4 +28,17 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'create', 'store', 'show']);
 });
 
+// Rota temporária para debug do MIME
+Route::post('/debug-mime', function (\Illuminate\Http\Request $request) {
+    if ($request->hasFile('attachment')) {
+        $file = $request->file('attachment');
+        return response()->json([
+            'mime' => $file->getMimeType(),
+            'client_mime' => $file->getClientMimeType(),
+            'extension' => $file->getClientOriginalExtension(),
+        ]);
+    }
+    return response()->json(['error' => 'no file']);
+})->middleware('web');
+
 require __DIR__.'/auth.php';
