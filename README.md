@@ -2,7 +2,7 @@
 
 Sistema de gestão de ordens de serviço desenvolvido como parte do desafio técnico para a KPMG.
 
-> Desenvolvido por um dev Jr que quis fazer direito: cada funcionalidade em sua própria branch, commits organizados por etapa, e tudo funcionando. 🚀
+> Desenvolvido por Alan Silva como teste técnico para a KPMG.
 
 ---
 
