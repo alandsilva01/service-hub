@@ -1,9 +1,17 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 
-defineProps({
+const props = defineProps({
     tickets: Array,
+    filters: Object,
+});
+
+const status = ref(props.filters?.status ?? '');
+
+watch(status, (val) => {
+    router.get(route('tickets.index'), { status: val }, { preserveState: true, replace: true });
 });
 
 const statusLabel = (status) => {
@@ -32,16 +40,24 @@ const statusColor = (status) => {
                     </h2>
                     <p class="text-slate-400 text-sm mt-1">{{ tickets.length }} ticket(s) encontrado(s)</p>
                 </div>
-                <Link :href="route('tickets.create')" class="btn-primary">
-                    + Novo Ticket
-                </Link>
+                <div class="flex items-center gap-3">
+                    <select v-model="status" class="filter-select">
+                        <option value="">Todos os status</option>
+                        <option value="open">Aberto</option>
+                        <option value="in_progress">Em andamento</option>
+                        <option value="closed">Fechado</option>
+                    </select>
+                    <Link :href="route('tickets.create')" class="btn-primary">
+                        + Novo Ticket
+                    </Link>
+                </div>
             </div>
         </template>
 
         <div class="py-6">
             <div v-if="tickets.length === 0" class="empty-state">
                 <span class="text-5xl mb-4 block">🐶</span>
-                <p class="text-slate-400 text-lg">Nenhum ticket ainda.</p>
+                <p class="text-slate-400 text-lg">Nenhum ticket encontrado.</p>
                 <Link :href="route('tickets.create')" class="btn-primary mt-4 inline-block">Criar primeiro ticket</Link>
             </div>
 
@@ -172,6 +188,21 @@ const statusColor = (status) => {
 .status-open    { background: rgba(249,115,22,0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.25); }
 .status-progress{ background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.25); }
 .status-closed  { background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
+
+.filter-select {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    color: #94a3b8;
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.filter-select:focus { border-color: rgba(249,115,22,0.5); }
+.filter-select option { background: #1e1b2e; }
 
 .btn-primary {
     background: linear-gradient(135deg, #f97316, #ea580c);

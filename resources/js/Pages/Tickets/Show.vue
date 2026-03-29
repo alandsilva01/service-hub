@@ -23,6 +23,7 @@ const enriched = () => {
                     <p class="text-slate-400 text-sm mt-1">#{{ ticket.id }}</p>
                 </div>
                 <Link :href="route('tickets.index')" class="btn-secondary">← Voltar</Link>
+                <Link :href="route('tickets.edit', ticket.id)" class="btn-edit">✏️ Editar</Link>
             </div>
         </template>
 
@@ -86,4 +87,6 @@ const enriched = () => {
 .status-closed  { background: rgba(34,197,94,0.15);  color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
 .btn-secondary { font-size: 0.875rem; color: #fb923c; border: 1px solid rgba(249,115,22,0.3); padding: 0.5rem 1rem; border-radius: 10px; text-decoration: none; transition: all 0.2s; }
 .btn-secondary:hover { background: rgba(249,115,22,0.1); }
+.btn-edit { font-size: 0.875rem; color: #fff; background: linear-gradient(135deg, #f97316, #ea580c); padding: 0.5rem 1rem; border-radius: 10px; text-decoration: none; transition: all 0.2s; }
+.btn-edit:hover { transform: translateY(-1px); box-shadow: 0 6px 25px rgba(249,115,22,0.5); }
 </style>
