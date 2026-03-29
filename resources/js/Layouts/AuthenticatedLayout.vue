@@ -1,21 +1,27 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 
 const showDropdown = ref(false);
 const page = usePage();
 const user = page.props.auth.user;
+
+const closeDropdown = (e) => {
+    if (!e.target.closest('.dropdown-wrapper')) {
+        showDropdown.value = false;
+    }
+};
+
+onMounted(() => document.addEventListener('click', closeDropdown));
+onUnmounted(() => document.removeEventListener('click', closeDropdown));
 </script>
 
 <template>
     <div class="app-bg min-h-screen">
-        <!-- Grid overlay -->
         <div class="grid-overlay"></div>
-        <!-- Orbs -->
         <div class="orb orb-1"></div>
         <div class="orb orb-2"></div>
 
-        <!-- Navbar -->
         <nav class="glass-nav sticky top-0 z-50">
             <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
                 <Link href="/tickets" class="flex items-center gap-2 group">
@@ -25,8 +31,8 @@ const user = page.props.auth.user;
 
                 <div class="flex items-center gap-6">
                     <Link href="/tickets" class="nav-link">Tickets</Link>
-                    <div class="relative">
-                        <button @click="showDropdown = !showDropdown" class="flex items-center gap-2 nav-link">
+                    <div class="relative dropdown-wrapper">
+                        <button @click.stop="showDropdown = !showDropdown" class="flex items-center gap-2 nav-link">
                             <div class="user-avatar">{{ user.name.charAt(0) }}</div>
                             <span class="hidden sm:block text-sm">{{ user.name }}</span>
                             <svg class="w-3 h-3 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,6 +143,7 @@ const user = page.props.auth.user;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    z-index: 100;
 }
 
 .dropdown-item {
